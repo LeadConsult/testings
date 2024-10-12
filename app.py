@@ -62,6 +62,7 @@ def profile():
 def admin():
     return render_template('admin.html')
 
+
 # Run the Flask app
 if __name__ == '__main__':
     app.run(debug=True)
