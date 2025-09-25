@@ -1,122 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MonetizePics - Home</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f3f4f6;
-        }
-        .hero {
-            background-image: url('https://images.unsplash.com/photo-1542312940-2b6aaa1b28eb?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cGhvdG9ncmFwaHl8ZW58MHwwfDB8fHwy');
-            background-size: cover;
-            height: 60vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-            position: relative;
-        }
-        .hero h1 {
-            font-size: 3.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        }
-        .hero p {
-            font-size: 1.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        }
-        .btn-custom {
-            background-color: #007bff;
-            color: white;
-            border-radius: 30px;
-            padding: 10px 30px;
-        }
-        .features {
-            margin-top: 50px;
-        }
-        .feature-card {
-            transition: transform 0.3s;
-        }
-        .feature-card:hover {
-            transform: scale(1.05);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose a Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f8fafc;
+    }
+    h1 {
+      margin-bottom: 40px;
+      color: #333;
+    }
+    .options {
+      display: flex;
+      gap: 30px;
+    }
+    .option {
+      padding: 20px 40px;
+      font-size: 20px;
+      color: #fff;
+      background: #007bff;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: background 0.3s ease;
+    }
+    .option:hover {
+      background: #0056b3;
+    }
+  </style>
 </head>
 <body>
-
-    
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">MonetizePics</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/upload">Upload</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/levels-badges">Levels & Badges</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/withdrawal">Withdrawals</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/referral">Referral Program</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/streaks">Streaks</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/contest">Contests</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="hero">
-        <div>
-            <h1>Welcome to MonetizePics!</h1>
-            <p>Upload your images and earn money while showcasing your creativity.</p>
-            <a href="/register" class="btn btn-custom">Get Started</a>
-        </div>
-    </div>
-
-    <div class="container features">
-        <h2 class="text-center my-5">Key Features</h2>
-        <div class="row text-center">
-            <div class="col-md-4">
-                <div class="card feature-card">
-                    <img src="https://images.unsplash.com/photo-1605325811498-79372c930a3f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cGhvdG9ncmFwaHl8ZW58MHwxfDB8fHwy" class="card-img-top" alt="Upload Images">
-                    <div class="card-body">
-                        <h5 class="card-title">Easy Image Uploads</h5>
-                        <p class="card-text">Quickly upload your images through a user-friendly interface.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card feature-card">
-                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?fit=crop&w=300&q=80" class="card-img-top" alt="Monetization">
-                    <div class="card-body">
-                        <h5 class="card-title">Monetization Opportunities</h5>
-                        <p class="card-text">Earn money through uploads, contests, and affiliate programs.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card feature-card">
-                    <img src="https://images.unsplash.com/photo-1605325811528-c5640fb2ac1a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8cGhvdG9ncmFwaHl8ZW58MHwxfDB8fHwy" class="card-img-top" alt="Track Progress">
-                    <div class="card-body">
-                        <h5 class="card-title">Track Your Progress</h5>
-                        <p class="card-text">Monitor your uploads, earnings, and levels through your dashboard.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="bg-light text-center py-4">
-        <p>&copy; 2024 MonetizePics. All rights reserved.</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <h1>Please choose a page</h1>
+  <div class="options">
+    <a class="option" href="{{ url_for('page1') }}">Page 1</a>
+    <a class="option" href="{{ url_for('page2') }}">Page 2</a>
+  </div>
 </body>
 </html>

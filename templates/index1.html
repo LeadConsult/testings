@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional line striping and pavement management for safe, compliant properties.">
+    <title>Line Crafts & Services - Expert Pavement Solutions</title>
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --secondary: #64748b;
+            --accent: #10b981;
+            --light: #f8fafc;
+            --lighter: #f1f5f9;
+            --dark: #0f172a;
+            --border: #e2e8f0;
+        }
+        
+        * {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(30, 64, 175, 0.8), rgba(30, 58, 138, 0.8)), url('static/images/hero-bg.jpg') center/cover no-repeat;
+            color: white;
+            padding: 220px 0 200px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .service-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            margin-bottom: 30px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            background: white;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .service-card .accordion-button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 20px 25px;
+            font-size: 1.2rem;
+        }
+        
+        .service-card .accordion-button:not(.collapsed) {
+            border-radius: 20px 20px 0 0 !important;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+        
+        .service-card .accordion-body {
+            padding: 25px;
+            background: var(--lighter);
+        }
+        
+        .service-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .why-choose {
+            background: var(--light);
+            padding: 60px 0;
+        }
+        
+        .feature-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: block;
+        }
+        
+        .cta-section {
+            background: linear-gradient(rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.8)), url('static/images/cta-bg.jpg') center/cover no-repeat;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--dark) 0%, #334155 100%);
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 35px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.4);
+            color: white;
+        }
+        
+        .btn-outline-light {
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            color: white;
+            padding: 12px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-light:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .display-4 {
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+        }
+        
+        .lead {
+            font-size: 1.1rem;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+        
+        .list-unstyled li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.75rem;
+            font-weight: 400;
+            font-size: 0.95rem;
+        }
+        
+        .list-unstyled li::before {
+            content: "\f058";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+        
+        .contact-form {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            transition: border-color 0.3s ease;
+            font-size: 0.95rem;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.15);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        .animate-on-scroll.visible {
+            opacity: 1;
+            animation-play-state: running;
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 0 50px;
+            }
+            .service-card .accordion-button {
+                font-size: 1.1rem;
+                padding: 18px 20px;
+            }
+            .service-card .accordion-body {
+                padding: 20px;
+            }
+            .list-unstyled li {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3 text-primary" href="#"><i class="fas fa-road me-2"></i>Line Crafts & Services</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item mx-3">
+                        <a class="nav-link fw-medium" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item mx-3">
+                        <a class="nav-link fw-medium" href="#why-us">Why Us</a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <a class="btn btn-primary rounded-pill px-4" href="#contact">Get Quote</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h1 class="display-4 fw-bold mb-3">Precision Pavement Solutions</h1>
+                    <p class="lead mb-4">Expert striping and maintenance for safe, compliant properties.</p>
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="#services" class="btn btn-light btn-lg px-4 rounded-pill fw-medium">Our Services</a>
+                        <a href="#contact" class="btn btn-outline-light btn-lg px-4 rounded-pill fw-medium">Free Quote</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section id="why-us" class="why-choose py-5">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold mb-2">Why Choose Us?</h2>
+                <p class="lead text-muted">20+ years of reliable, high-quality service.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="text-center animate-on-scroll">
+                        <img src="static/images/compliance.jpg" alt="ADA Compliance Icon" class="feature-image" loading="lazy">
+                        <h5 class="fw-semibold mb-2">ADA Compliant</h5>
+                        <p class="text-muted mb-0">Meets accessibility standards for safe spaces.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="text-center animate-on-scroll">
+                        <img src="static/images/durability.jpg" alt="Durable Materials Icon" class="feature-image" loading="lazy">
+                        <h5 class="fw-semibold mb-2">Durable Materials</h5>
+                        <p class="text-muted mb-0">Weather-resistant for long-lasting results.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="text-center animate-on-scroll">
+                        <img src="static/images/speed.jpg" alt="Fast Turnaround Icon" class="feature-image" loading="lazy">
+                        <h5 class="fw-semibold mb-2">Fast Service</h5>
+                        <p class="text-muted mb-0">Minimal disruption, on-time completion.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold mb-2">Our Services</h2>
+                <p class="lead text-muted">Tailored pavement solutions for all needs.</p>
+            </div>
+            
+            <!-- Services Accordion -->
+            <div class="accordion" id="servicesAccordion">
+                <!-- Category 1 -->
+                <div class="accordion-item service-card">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                            <i class="fas fa-paint-brush me-3"></i>Line Striping & Marking
+                        </button>
+                    </h2>
+                    <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#servicesAccordion">
+                        <div class="accordion-body">
+                            <img src="static/images/striping.jpg" alt="Line Striping Example" class="service-image mb-3" loading="lazy">
+                            <p class="text-muted mb-3">Precise, durable markings for safety and compliance.</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-primary mb-2"><i class="fas fa-parking me-1"></i>Parking Lots</h6>
+                                    <ul class="list-unstyled">
+                                        <li>New layouts & restriping</li>
+                                        <li>ADA handicap spaces</li>
+                                        <li>Fire lanes & arrows</li>
+                                        <li>Custom stencils & curbs</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-primary mb-2"><i class="fas fa-cogs me-1"></i>Specialty</h6>
+                                    <ul class="list-unstyled">
+                                        <li>Warehouse floors</li>
+                                        <li>Athletic courts</li>
+                                        <li>Roadways & EV zones</li>
+                                        <li>Curbside pickup</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 2 -->
+                <div class="accordion-item service-card">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                            <i class="fas fa-tools me-3"></i>Pavement Maintenance
+                        </button>
+                    </h2>
+                    <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#servicesAccordion">
+                        <div class="accordion-body">
+                            <img src="static/images/maintenance.jpg" alt="Pavement Maintenance Example" class="service-image mb-3" loading="lazy">
+                            <p class="text-muted mb-3">Proactive repairs to extend pavement life.</p>
+                            <ul class="list-unstyled">
+                                <li>Sealcoating for protection</li>
+                                <li>Crack sealing & pothole repair</li>
+                                <li>Asphalt patching & resurfacing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 3 -->
+                <div class="accordion-item service-card">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                            <i class="fas fa-plus me-3"></i>Additional Services
+                        </button>
+                    </h2>
+                    <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#servicesAccordion">
+                        <div class="accordion-body">
+                            <img src="static/images/additional.jpg" alt="Additional Services Example" class="service-image mb-3" loading="lazy">
+                            <p class="text-muted mb-3">One-stop enhancements for your property.</p>
+                            <ul class="list-unstyled">
+                                <li>Sweeping & power washing</li>
+                                <li>Wheel stops & speed bumps</li>
+                                <li>Sign installation</li>
+                                <li>Line removal</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call-to-Action Section -->
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="fw-bold mb-3">Ready to Enhance Your Property?</h2>
+                    <p class="lead mb-4 text-muted">Contact us for a free quote and expert consultation.</p>
+                    <a href="#footer-form" class="btn btn-primary btn-lg px-5 rounded-pill fw-medium">Get Free Quote</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer with Contact Form -->
+    <footer id="contact">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center mb-5">
+                        <h3 class="text-white mb-3">Get in Touch</h3>
+                        <p class="text-muted-white mb-0">Phone: +1 (540) 314-0941 | Email: info@linecrafts.com</p>
+                    </div>
+                    <form id="footer-form" class="contact-form animate-on-scroll">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Your Name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="form-control" placeholder="Your Email" required>
+                            </div>
+                            <div class="col-12">
+                                <textarea class="form-control" rows="4" placeholder="Your Message" required></textarea>
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-primary px-5">Send Message</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="text-center mt-4">
+                        <p class="text-muted-white">&copy; 2025 Line Crafts & Services. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <!-- Simple Scroll Animation Script -->
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Animate on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Form submission (basic alert for demo; replace with real backend)
+        document.getElementById('footer-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you! Your message has been sent. We\'ll respond soon.');
+            e.target.reset();
+        });
+    </script>
+</body>
+</html>

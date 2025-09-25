@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Line Crafts & Services provides expert line striping, pavement maintenance, and repair services to enhance and protect your property.">
+    <title>Line Crafts & Services - Pavement Solutions</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #0a3d62;
+            --secondary-color: #e76f51;
+            --text-color: #2d2d2d;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --card-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-color);
+            background: var(--light-bg);
+            line-height: 1.6;
+        }
+        .navbar {
+            background: var(--primary-color);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+        }
+        .nav-link {
+            color: white !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+        }
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url("{{ url_for('static', filename='img/1.jpg') }}") center/cover no-repeat;
+            color: white;
+            padding: 150px 0;
+            text-align: left;
+        }
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .hero-section .lead {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+        .btn-primary {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            padding: 12px 30px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+        .btn-primary:hover {
+            background: #d95e40;
+            border-color: #d95e40;
+            transform: translateY(-2px);
+        }
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .service-section {
+            padding: 100px 0;
+            background: white;
+        }
+        .service-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+        }
+        .service-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+        .service-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: var(--card-shadow);
+            flex: 1 1 320px;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+        }
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--card-shadow-hover);
+        }
+        .service-card img {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+        .service-card .card-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+        }
+        .service-card .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+        .service-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: auto;
+            flex-grow: 1;
+        }
+        .service-list li {
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            position: relative;
+            padding-left: 1.5rem;
+            color: #555;
+        }
+        .service-list li:before {
+            content: '✔';
+            position: absolute;
+            left: 0;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+        .cta-section {
+            background: linear-gradient(rgba(10,61,98,0.8), rgba(26,90,140,0.8)), 
+                        url("{{ url_for('static', filename='img/6.jpg') }}") center/cover no-repeat;
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+        }
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .cta-section p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .about-section {
+            padding: 50px 0;
+            background: var(--light-bg);
+        }
+        .about-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
+        .about-section p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+        .about-section img {
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            height: 400px;
+            object-fit: cover;
+        }
+        .review-section {
+            padding: 50px 0;
+            background: white;
+        }
+        .review-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .review-card {
+            background: var(--light-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--secondary-color);
+        }
+        .review-card:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-5px);
+        }
+        .review-card p.fst-italic {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+        .review-card .fw-bold {
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+        .contact-section {
+            padding: 50px 0;
+            background: var(--light-bg);
+        }
+        .contact-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .contact-info h4 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .contact-info p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        .contact-form .form-label {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        .contact-form .form-control {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            padding: 12px 15px;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .contact-form .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(231, 111, 81, 0.25);
+        }
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 60px 0 30px;
+        }
+        footer h5 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        footer a {
+            color: rgba(255,255,255,0.8);
+            transition: color 0.3s ease;
+        }
+        footer a:hover {
+            color: var(--secondary-color);
+        }
+        .social-icons {
+            margin-top: 1rem;
+        }
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        .social-icons a:hover {
+            color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 2rem;
+            padding-top: 2rem;
+            font-size: 0.9rem;
+        }
+        .skip-link {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px;
+            z-index: 1000;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .service-card, .review-card, .about-section img {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        a {
+            text-decoration: none;   
+            color: inherit;          
+          }
+          
+        a:hover {
+            text-decoration: none;  
+            color: var(--secondary-color); 
+          }
+          
+    </style>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- ScrollReveal JS -->
+    <script src="https://unpkg.com/scrollreveal@4.0.9/dist/scrollreveal.min.js"></script>
+</head>
+<body>
+    <!-- Skip Links for Accessibility -->
+    <a href="#content" class="skip-link">Skip to Content</a>
+    <a href="#menu" class="skip-link">Skip to Menu</a>
+    <a href="#footer" class="skip-link">Skip to Footer</a>
+
+    <!-- Navigation -->
+    <nav id="menu" class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='img/lo.jpg') }}" alt="Line Crafts & Services Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#reviews">Testimonials</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-outline-light ms-2" href="#quote">Request a Quote</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="content" class="hero-section fade-in">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h1>Expert Pavement Solutions by Line Crafts & Services</h1>
+                    <p class="lead">Comprehensive line striping, pavement maintenance, and repair services to enhance safety and curb appeal for your property.</p>
+                    <a href="#quote" class="btn btn-primary btn-lg mt-3">Get a Free Quote</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="service-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Our Comprehensive Services</h2>
+            <div class="service-row">
+                <div class="service-card fade-in">
+                    <img src="{{ url_for('static', filename='img/2.jpg') }}" class="card-img-top" alt="Line Striping and Pavement Marking">
+                    <div class="card-body">
+                        <h5 class="card-title">Line Striping & Pavement Marking</h5>
+                        <ul class="service-list">
+                            <li>New Layouts and Design for new construction</li>
+                            <li>Restriping for existing parking lots</li>
+                            <li>ADA-compliant Handicap Parking Spaces</li>
+                            <li>Fire Lanes with stenciling and curb painting</li>
+                            <li>Directional Arrows and Traffic Flow Markings</li>
+                            <li>Custom Stencils: "No Parking," "Reserved," etc.</li>
+                            <li>Warehouse Floor Markings (safety zones, forklift paths)</li>
+                            <li>Athletic Court Striping (tennis, basketball, pickleball)</li>
+                            <li>Roadway Markings (crosswalks, stop bars)</li>
+                            <li>EV Charging Station and Curbside Pickup Markings</li>
+                        </ul>
+                        <a href="#" class="btn btn-outline-primary mt-auto">Learn More</a>
+                    </div>
+                </div>
+                <div class="service-card fade-in">
+                    <img src="{{ url_for('static', filename='img/3.jpg') }}" class="card-img-top" alt="Pavement Maintenance and Repair">
+                    <div class="card-body">
+                        <h5 class="card-title">Pavement Maintenance & Repair</h5>
+                        <ul class="service-list">
+                            <li>Asphalt Sealcoating to prevent oxidation and water damage</li>
+                            <li>Crack Sealing to protect sub-base and prevent potholes</li>
+                            <li>Permanent Pothole Repair with asphalt patching</li>
+                            <li>Asphalt Patching and Resurfacing for damaged areas</li>
+                            <li>Asphalt Overlays for large-scale restoration</li>
+                        </ul>
+                        <a href="#" class="btn btn-outline-primary mt-auto">Learn More</a>
+                    </div>
+                </div>
+                <div class="service-card fade-in">
+                    <img src="{{ url_for('static', filename='img/4.jpg') }}" class="card-img-top" alt="Additional Pavement Services">
+                    <div class="card-body">
+                        <h5 class="card-title">Additional Services</h5>
+                        <ul class="service-list">
+                            <li>Pavement Sweeping and Power Washing for cleanliness</li>
+                            <li>Wheel Stop and Speed Bump Installation</li>
+                            <li>Parking Lot Sign Installation (handicap, stop, yield)</li>
+                            <li>Line Removal via grinding or blacking out</li>
+                        </ul>
+                        <a href="#" class="btn btn-outline-primary mt-auto">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="quote" class="cta-section fade-in">
+        <div class="container">
+            <h2>Enhance Your Property Today</h2>
+            <p>Request a free quote and receive a detailed proposal tailored to your pavement needs.</p>
+            <a href="#contact" class="btn btn-primary btn-lg mt-4">Request a Quote</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-4 mb-lg-0 fade-in">
+                    <img src="{{ url_for('static', filename='img/1.jpg') }}" class="img-fluid rounded" alt="Line Crafts & Services Team">
+                </div>
+                <div class="col-lg-7 fade-in">
+                    <h2>About Line Crafts & Services</h2>
+                    <p>Line Crafts & Services is your trusted partner for professional line striping and pavement management. Our team combines expertise with cutting-edge technology to deliver durable, high-quality solutions that enhance safety and aesthetics for your property.</p>
+                    <p>Based in the heart of the community, we understand the unique needs of property managers, business owners, and HOA representatives. Our commitment to excellence ensures your pavement assets are maintained to the highest standards, saving you time and money.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <!-- Reviews Section -->
+    <section id="reviews" class="review-section">
+        <div class="container">
+            <h2 class="text-center mb-5">What Our Clients Say</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5 mb-4">
+                    <div class="review-card fade-in">
+                        <p class="fst-italic">"Line Crafts & Services transformed our parking lot with precise striping and excellent service. Their team was professional and accommodating!"</p>
+                        <p class="fw-bold">– Sarah Thompson, Property Manager</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-5 mb-4">
+                    <div class="review-card fade-in">
+                        <p class="fst-italic">"Their sealcoating and crack sealing services extended the life of our pavement. The process was seamless and the results are outstanding."</p>
+                        <p class="fw-bold">– Michael Lee, Business Owner</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="text-center mb-5">Contact Us</h2>
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="contact-info text-center text-lg-start">
+                        <h4>Line Crafts & Services</h4>
+                        <p><strong>Phone:</strong> (281) 555-1234</p>
+                        <p><strong>Email:</strong> <a href="mailto:info@linecrafts.com" style="color: #555; text-decoration: none;">info@linecrafts.com</a></p>
+                        <p><strong>Serving:</strong> Greater Metropolitan Area and surrounding communities</p>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <form class="contact-form" onsubmit="handleSubmit(event)">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">First Name*</label>
+                                <input type="text" class="form-control" id="firstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Last Name*</label>
+                                <input type="text" class="form-control" id="lastName" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email*</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Phone Number*</label>
+                                <input type="tel" class="form-control" id="phone" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="services" class="form-label">Services Required*</label>
+                            <textarea class="form-control" id="services" rows="5" placeholder="Describe your pavement needs..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 w-md-auto">Submit Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>Line Crafts & Services</h5>
+                    <p>(281) 555-1234<br>
+                    info@linecrafts.com</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#reviews">Testimonials</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#quote">Request a Quote</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Connect With Us</h5>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom text-center">
+                <p>&copy; 2025 Line Crafts & Services. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            alert('Your request has been submitted! We will contact you soon.');
+            event.target.reset();
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar fixed-top adjustment for hero section
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(10, 61, 98, 0.95)';
+                navbar.style.backdropFilter = 'blur(10px)';
+            } else {
+                navbar.style.background = 'var(--primary-color)';
+                navbar.style.backdropFilter = 'none';
+            }
+        });
+
+        // ScrollReveal animations (enhanced)
+        ScrollReveal().reveal('.fade-in', {
+            delay: 200,
+            distance: '50px',
+            origin: 'bottom',
+            opacity: 0,
+            duration: 800,
+            interval: 200,
+            scale: 0.9
+        });
+
+        // Stagger animations for service cards
+        ScrollReveal().reveal('.service-card', {
+            delay: 300,
+            distance: '30px',
+            origin: 'bottom',
+            opacity: 0,
+            duration: 700,
+            interval: 150
+        });
+
+        // Intersection Observer for better performance on animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in, .service-card, .review-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
