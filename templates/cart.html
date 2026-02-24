@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Cart - GraceLight Books | Pastor Sunday</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #c9a962;
+            --light-bg: #faf9f6;
+            --text-muted: #6c757d;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-bg);
+        }
+
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .btn-outline-dark-custom {
+            border: 1px solid #2c3e50;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-dark-custom:hover {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        .btn-dark-custom {
+            background-color: #2c3e50;
+            border: 1px solid #2c3e50;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-dark-custom:hover {
+            background-color: transparent;
+            color: #2c3e50;
+        }
+
+        .section-padding {
+            padding: 5rem 0;
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .quantity-btn {
+            width: 38px;
+            height: 38px;
+            font-size: 1.1rem;
+        }
+
+        .cart-empty {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .nav-link-custom {
+            color: #2c3e50 !important;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-link-custom::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: #2c3e50;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link-custom:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION - cart icon now links to cart.html -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand font-display fw-bold fs-4" href="/">
+                <i class="bi bi-book me-2"></i>GraceLight Books
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="books.html">Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#">Resources</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#">About Pastor</a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <a class="btn btn-outline-dark-custom" href="#"><i class="bi bi-person me-1"></i>Login</a>
+                    </li>
+                    <li class="nav-item ms-2 position-relative">
+                        <a class="btn btn-dark-custom" href="/cart">
+                            <i class="bi bi-cart3"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge" id="cartCount">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CART SECTION -->
+    <section class="section-padding bg-white">
+        <div class="container">
+            <h1 class="font-display display-5 fw-bold text-center mb-5">Your Cart</h1>
+
+            <div id="cartContainer">
+                <!-- Items will be injected here by JavaScript -->
+            </div>
+
+            <!-- Empty cart state -->
+            <div id="emptyCart" class="cart-empty d-none">
+                <i class="bi bi-cart-x display-1 text-muted mb-4"></i>
+                <h4 class="text-muted mb-3">Your cart is empty</h4>
+                <p class="text-muted mb-4">Looks like you haven't added any books yet.</p>
+                <a href="books.html" class="btn btn-dark-custom btn-lg px-5">
+                    Start Shopping <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+
+            <!-- Cart summary & checkout -->
+            <div id="cartSummary" class="d-none bg-light-custom p-4 rounded-3 mt-5 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="font-display fw-bold mb-0">Order Summary</h4>
+                    <h4 class="fw-bold mb-0" id="cartTotal">₦0.00</h4>
+                </div>
+                <hr>
+                <div class="d-grid">
+                    <a href="/checkout" class="btn btn-success btn-lg py-3">
+                        Proceed to Checkout <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+                <p class="text-center text-muted small mt-3">
+                    You'll be asked to make bank transfer and confirm via WhatsApp
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white pt-5 pb-4">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h4 class="font-display fw-bold mb-4"><i class="bi bi-book me-2"></i>GraceLight Books</h4>
+                    <p class="opacity-75 mb-4" style="max-width: 320px;">
+                        Sharing God's truth through Spirit-led writings from Pastor Sunday.
+                        Edifying souls across Nigeria and beyond.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-whatsapp"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+
+                <!-- Rest of footer columns... (same as before) -->
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-uppercase fw-bold mb-4">Books</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="books.html" class="text-white-50 text-decoration-none">All Titles</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Devotionals</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Prayer & Study</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-uppercase fw-bold mb-4">Ministry</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">About Pastor Sunday</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Sermons</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Prayer Requests</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-uppercase fw-bold mb-4">Help</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">FAQs</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Downloads</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-uppercase fw-bold mb-4">Reach Us</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 text-white-50">
+                            <i class="bi bi-geo-alt me-2"></i>Lagos, Nigeria
+                        </li>
+                        <li class="mb-2 text-white-50">
+                            <i class="bi bi-whatsapp me-2"></i>+234 803 123 4567
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-4 border-light opacity-25" />
+
+            <div class="text-center opacity-75 small">
+                © 2026 GraceLight Books. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Cart Logic -->
+    <script>
+        const cartContainer = document.getElementById('cartContainer');
+        const emptyCart = document.getElementById('emptyCart');
+        const cartSummary = document.getElementById('cartSummary');
+        const cartTotalEl = document.getElementById('cartTotal');
+        const cartCountEl = document.getElementById('cartCount');
+
+        // Load cart
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateNavbarBadge();
+        }
+
+        function updateNavbarBadge() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCountEl.textContent = count;
+            cartCountEl.style.display = count > 0 ? 'inline-block' : 'none';
+        }
+
+        function renderCart() {
+            if (cart.length === 0) {
+                emptyCart.classList.remove('d-none');
+                cartSummary.classList.add('d-none');
+                cartContainer.innerHTML = '';
+                return;
+            }
+
+            emptyCart.classList.add('d-none');
+            cartSummary.classList.remove('d-none');
+
+            let html = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                html += `
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center g-4">
+                                <div class="col-3 col-md-2">
+                                    <img src="static/images/${item.id === '1' ? '2' : 'placeholder'}.jpg" 
+                                         alt="${item.title}" class="cart-item-img">
+                                </div>
+                                <div class="col-9 col-md-10">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="fw-bold mb-1">${item.title}</h5>
+                                            <p class="text-muted small mb-2">
+                                                Format: <strong>${item.format.charAt(0).toUpperCase() + item.format.slice(1)}</strong>
+                                            </p>
+                                            <p class="fw-bold text-dark mb-0">₦${item.price.toLocaleString()}</p>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-danger remove-item" 
+                                                data-index="${index}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="mt-3 d-flex align-items-center gap-3">
+                                        <div class="input-group input-group-sm w-auto">
+                                            <button class="btn btn-outline-secondary quantity-btn decrease" 
+                                                    data-index="${index}">-</button>
+                                            <span class="form-control text-center quantity-display" 
+                                                  style="width:60px;">${item.quantity}</span>
+                                            <button class="btn btn-outline-secondary quantity-btn increase" 
+                                                    data-index="${index}">+</button>
+                                        </div>
+                                        <div class="fw-bold text-primary">
+                                            ₦${itemTotal.toLocaleString()}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartContainer.innerHTML = html;
+            cartTotalEl.textContent = `₦${total.toLocaleString()}`;
+        }
+
+        // Event delegation for quantity & remove
+        cartContainer.addEventListener('click', function(e) {
+            const target = e.target;
+
+            if (target.closest('.increase')) {
+                const btn = target.closest('.increase');
+                const index = parseInt(btn.dataset.index);
+                cart[index].quantity += 1;
+                saveCart();
+                renderCart();
+            }
+
+            if (target.closest('.decrease')) {
+                const btn = target.closest('.decrease');
+                const index = parseInt(btn.dataset.index);
+                if (cart[index].quantity > 1) {
+                    cart[index].quantity -= 1;
+                    saveCart();
+                    renderCart();
+                }
+            }
+
+            if (target.closest('.remove-item')) {
+                const btn = target.closest('.remove-item');
+                const index = parseInt(btn.dataset.index);
+                cart.splice(index, 1);
+                saveCart();
+                renderCart();
+            }
+        });
+
+        // Initial render
+        renderCart();
+        updateNavbarBadge();
+    </script>
+</body>
+</html>

@@ -1,47 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Choose a Page</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background: #f8fafc;
-    }
-    h1 {
-      margin-bottom: 40px;
-      color: #333;
-    }
-    .options {
-      display: flex;
-      gap: 30px;
-    }
-    .option {
-      padding: 20px 40px;
-      font-size: 20px;
-      color: #fff;
-      background: #007bff;
-      text-decoration: none;
-      border-radius: 10px;
-      transition: background 0.3s ease;
-    }
-    .option:hover {
-      background: #0056b3;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GraceLight Books | Pastor [Your Name]'s Digital Library</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #c9a962;
+            --light-bg: #faf9f6;
+            --text-muted: #6c757d;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--light-bg); }
+        .font-display { font-family: 'Playfair Display', serif; }
+        .text-accent { color: var(--accent-color) !important; }
+        .bg-light-custom { background-color: var(--light-bg); }
+        .btn-outline-dark-custom { border: 1px solid #2c3e50; color: #2c3e50; padding: 0.75rem 1.5rem; font-weight: 500; transition: all 0.3s ease; }
+        .btn-outline-dark-custom:hover { background-color: #2c3e50; color: white; }
+        .btn-dark-custom { background-color: #2c3e50; border: 1px solid #2c3e50; color: white; padding: 0.75rem 1.5rem; font-weight: 500; transition: all 0.3s ease; }
+        .btn-dark-custom:hover { background-color: transparent; color: #2c3e50; }
+        .section-padding { padding: 5rem 0; }
+        .card-book { border: none; background: transparent; transition: transform 0.3s ease; }
+        .card-book:hover { transform: translateY(-5px); }
+        .img-cover { aspect-ratio: 2/3; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .nav-link-custom { color: #2c3e50 !important; font-weight: 500; position: relative; }
+        .nav-link-custom::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background-color: #2c3e50; transition: width 0.3s ease; }
+        .nav-link-custom:hover::after { width: 100%; }
+        .badge-custom { background-color: var(--accent-color); color: white; padding: 0.5rem 1rem; font-weight: 500; }
+        .cta-bg {
+            background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('static/images/a.jpg') center/cover no-repeat;
+            background-attachment: fixed;
+        }
+        .testimonial-img { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 3px solid #fff; }
+    </style>
 </head>
 <body>
-  <h1>Please choose a page</h1>
-  <div class="options">
-    <a class="option" href="{{ url_for('page1') }}">Page 1</a>
-    <a class="option" href="{{ url_for('page2') }}">Page 2</a>
-  </div>
+    <!-- 1. HEADER / NAVIGATION -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand font-display fw-bold fs-4" href="#"><i class="bi bi-book me-2"></i>GraceLight Books</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item"><a class="nav-link nav-link-custom active ms-3" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom ms-3" href="#">My Books</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom ms-3" href="#">Resources</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom ms-3" href="#">About Pastor</a></li>
+                    <li class="nav-item ms-3"><a class="btn btn-outline-dark-custom" href="#"><i class="bi bi-person me-1"></i>Login</a></li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-dark-custom position-relative" href="/cart">
+                            <i class="bi bi-cart3"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 2. HERO SECTION -->
+    <header class="hero-section bg-white">
+        <div class="container">
+            <div class="row align-items-center min-vh-75">
+                <div class="col-lg-6 order-2 order-lg-1">
+                    <span class="badge badge-custom mb-3">Pastor-Owned Ministry</span>
+                    <h1 class="font-display display-4 fw-bold mb-4 lh-base">Grace & Truth from the <span class="text-accent">Shepherd's Heart</span></h1>
+                    <p class="text-muted mb-4 fs-5">Digital editions of books born from years of preaching, prayer, and pastoral care. Written not for acclaim, but for souls seeking Christ.</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="/catalog" class="btn btn-dark-custom btn-lg">Browse Books <i class="bi bi-arrow-right ms-2"></i></a>
+                        <a href="#" class="btn btn-outline-dark-custom btn-lg">Contact Pastor</a>
+                    </div>
+                    <div class="d-flex gap-4 mt-5">
+                        <div class="text-center">
+                            <h3 class="font-display fw-bold mb-0">Deep, Not Many</h3>
+                            <small class="text-muted">Focused Works</small>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="font-display fw-bold mb-0">From Pulpit</h3>
+                            <small class="text-muted">To Your Heart</small>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="font-display fw-bold mb-0">100%</h3>
+                            <small class="text-muted">Ministry-Driven</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 order-1 order-lg-2 mb-5 mb-lg-0">
+                    <div class="position-relative">
+                        <img src="static/images/1.jpg" alt="Pastor in Study" class="img-fluid rounded-4 shadow-lg" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. FEATURED BOOKS SECTION -->
+    <section class="section-padding bg-white">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <span class="text-uppercase text-muted small fw-bold ls-2">From the Heart</span>
+                    <h2 class="font-display display-5 fw-bold mt-2">Featured Titles</h2>
+                    <p class="text-muted mt-3 mx-auto" style="max-width: 600px;">A selection of books written by Pastor [Your Name] — crafted prayerfully for discipleship, encouragement, and deeper walk with Christ.</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <!-- Book 1 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-book">
+                        <div class="position-relative mb-3 overflow-hidden rounded-3">
+                            <img src="static/images/2.jpg" alt="Walking in Grace Daily" class="img-cover w-100" />
+                            <div class="position-absolute top-0 end-0 m-2"><span class="badge bg-success">Devotional</span></div>
+                        </div>
+                        <div class="text-center">
+                            <h5 class="font-display fw-bold mb-1">Walking in Grace Daily</h5>
+                            <p class="text-muted small mb-2">Pastor [Your Name]</p>
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <span class="fw-bold fs-5">$9.99</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Book 2 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-book">
+                        <div class="position-relative mb-3 overflow-hidden rounded-3">
+                            <img src="static/images/3.jpg" alt="The Shepherd's Call" class="img-cover w-100" />
+                            <div class="position-absolute top-0 end-0 m-2"><span class="badge bg-primary">Pastoral</span></div>
+                        </div>
+                        <div class="text-center">
+                            <h5 class="font-display fw-bold mb-1">The Shepherd's Call</h5>
+                            <p class="text-muted small mb-2">Pastor [Your Name]</p>
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <span class="fw-bold fs-5">$12.99</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Book 3 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-book">
+                        <div class="position-relative mb-3 overflow-hidden rounded-3">
+                            <img src="static/images/4.jpg" alt="Prayer That Changes Us" class="img-cover w-100" />
+                            <div class="position-absolute top-0 end-0 m-2"><span class="badge bg-warning text-dark">Prayer</span></div>
+                        </div>
+                        <div class="text-center">
+                            <h5 class="font-display fw-bold mb-1">Prayer That Changes Us</h5>
+                            <p class="text-muted small mb-2">Pastor [Your Name]</p>
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <span class="fw-bold fs-5">$8.99</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Book 4 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-book">
+                        <div class="position-relative mb-3 overflow-hidden rounded-3">
+                            <img src="static/images/5.jpg" alt="Scripture for the Soul" class="img-cover w-100" />
+                            <div class="position-absolute top-0 end-0 m-2"><span class="badge bg-info">Study</span></div>
+                        </div>
+                        <div class="text-center">
+                            <h5 class="font-display fw-bold mb-1">Scripture for the Soul</h5>
+                            <p class="text-muted small mb-2">Pastor [Your Name]</p>
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <span class="fw-bold fs-5">$14.99</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="/catalog" class="btn btn-outline-dark-custom">View All Books <i class="bi bi-arrow-right ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. WHY CHOOSE US -->
+    <section class="section-padding bg-white">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                            <i class="bi bi-pen fs-2 text-primary"></i>
+                        </div>
+                        <h5 class="font-display fw-bold mb-2">Direct from Pastor</h5>
+                        <p class="text-muted small mb-0">Every book written and offered personally — no middlemen.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                            <i class="bi bi-shield-check fs-2 text-primary"></i>
+                        </div>
+                        <h5 class="font-display fw-bold mb-2">Supports the Ministry</h5>
+                        <p class="text-muted small mb-0">Proceeds fuel ongoing pastoral work and outreach.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                            <i class="bi bi-heart fs-2 text-primary"></i>
+                        </div>
+                        <h5 class="font-display fw-bold mb-2">Soul-Nourishing Content</h5>
+                        <p class="text-muted small mb-0">Focused on Scripture, grace, and transformation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. CALL TO ACTION SECTION (Newsletter) -->
+    <section class="section-padding cta-bg text-white">
+        <div class="container position-relative z-1">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="font-display display-5 fw-bold mb-3">Join Our Reading Community</h2>
+                    <p class="mb-4 fs-5 opacity-90">Receive encouragement straight to your inbox — new release alerts, devotional excerpts, prayer insights, and special ministry updates from Pastor [Your Name].</p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                    <a href="#" class="btn btn-light btn-lg px-4">Subscribe Now <i class="bi bi-envelope ms-2"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. TESTIMONIALS -->
+    <section class="section-padding bg-light-custom">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <span class="text-uppercase text-muted small fw-bold ls-2">Testimonials</span>
+                    <h2 class="font-display display-5 fw-bold mt-2">What Readers Say</h2>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <div class="d-flex mb-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                        </div>
+                        <p class="mb-4">"These books have deepened my quiet time and brought fresh revelation from God's Word. Truly a blessing!"</p>
+                        <div class="d-flex align-items-center">
+                            <img src="static/images/t1.jpg" alt="Reader 1" class="testimonial-img me-3" />
+                            <div>
+                                <h6 class="mb-0 fw-bold">Bro. Chinedu Okeke</h6>
+                                <small class="text-muted">Lagos</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <div class="d-flex mb-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                        </div>
+                        <p class="mb-4">"Pastor’s writings have strengthened my faith during tough seasons. Highly recommended for every believer."</p>
+                        <div class="d-flex align-items-center">
+                            <img src="static/images/t2.jpg" alt="Reader 2" class="testimonial-img me-3" />
+                            <div>
+                                <h6 class="mb-0 fw-bold">Sis. Aisha Ibrahim</h6>
+                                <small class="text-muted">Abuja</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <div class="d-flex mb-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                        </div>
+                        <p class="mb-4">"Simple, scriptural, and life-changing. These books are helping me grow in grace daily."</p>
+                        <div class="d-flex align-items-center">
+                            <img src="static/images/t3.jpg" alt="Reader 3" class="testimonial-img me-3" />
+                            <div>
+                                <h6 class="mb-0 fw-bold">Deacon Joseph Adebayo</h6>
+                                <small class="text-muted">Port Harcourt</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. FOOTER -->
+    <footer class="bg-dark text-white pt-5 pb-4">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Brand -->
+                <div class="col-lg-4">
+                    <h4 class="font-display fw-bold mb-4"><i class="bi bi-book me-2"></i>GraceLight Books</h4>
+                    <p class="opacity-75 mb-4" style="max-width: 300px;">Sharing God's truth through Spirit-led writings from Pastor [Your Name]. Edifying souls across Nigeria and beyond.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-whatsapp"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-uppercase fw-bold mb-4">Books</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">All Titles</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Devotionals</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Prayer & Study</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">New Releases</a></li>
+                    </ul>
+                </div>
+
+                <!-- Ministry -->
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-uppercase fw-bold mb-4">Ministry</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">About Pastor</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Sermons</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Prayer Requests</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Give Support</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-uppercase fw-bold mb-4">Help</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">FAQs</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Downloads</a></li>
+                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-6 col-lg-2">
+                    <h6 class="text-uppercase fw-bold mb-4">Reach Us</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2 text-white-50">
+                            <i class="bi bi-geo-alt me-2"></i>Grace Chapel, Ikeja, Lagos, Nigeria
+                        </li>
+                        <li class="mb-2 text-white-50">
+                            <i class="bi bi-envelope me-2"></i>info@gracelightbooks.org.ng
+                        </li>
+                        <li class="mb-2 text-white-50">
+                            <i class="bi bi-whatsapp me-2"></i>+234 803 123 4567
+                        </li>
+                        <li class="mb-2 text-white-50">
+                            <i class="bi bi-telephone me-2"></i>+234 817 884 7295
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-4 border-light" />
+
+            <!-- Bottom Footer -->
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p class="mb-0 opacity-75">© 2026 GraceLight Books. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-white-50 text-decoration-none me-3">Privacy</a>
+                    <a href="#" class="text-white-50 text-decoration-none me-3">Terms</a>
+                    <a href="#" class="text-white-50 text-decoration-none">Refund Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

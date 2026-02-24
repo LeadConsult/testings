@@ -7,13 +7,21 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
-@app.route("/page1")
-def page1():
-    return render_template("index1.html")
+@app.route('/catalog')
+def catalog():
+    return render_template('catalog.html')
 
-@app.route("/page2")
-def page2():
-    return render_template("index2.html")
+@app.route('/bookDetail')
+def bookDetail():
+    return render_template('book-detail.html')
+
+@app.route('/cart')
+def cart():
+    return render_template('cart.html')
+
+@app.route('/checkout')
+def checkout():
+    return render_template('checkout.html')
 
 # Run the Flask app
 if __name__ == '__main__':

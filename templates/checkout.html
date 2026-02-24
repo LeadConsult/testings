@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout - GraceLight Books | Pastor Sunday</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #c9a962;
+            --light: #faf9f6;
+            --muted: #6c757d;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--light); }
+        .font-display { font-family: 'Playfair Display', serif; }
+        .section-padding { padding: 5rem 0; }
+        .cart-item-img { width: 70px; height: 100px; object-fit: cover; border-radius: 6px; }
+        .bank-box {
+            background: white;
+            border-left: 5px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .whatsapp-btn {
+            background: #25D366;
+            border: none;
+            font-size: 1.1rem;
+        }
+        .whatsapp-btn:hover {
+            background: #20b058;
+        }
+        .form-label { font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand font-display fw-bold fs-4" href="/">
+                <i class="bi bi-book me-2"></i>GraceLight Books
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="books.html">Books</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="#">Resources</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-custom" href="#">About Pastor</a></li>
+                    <li class="nav-item ms-3">
+                        <a class="btn btn-outline-dark-custom" href="#"><i class="bi bi-person me-1"></i>Login</a>
+                    </li>
+                    <li class="nav-item ms-2 position-relative">
+                        <a class="btn btn-dark-custom" href="cart.html">
+                            <i class="bi bi-cart3"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge" id="cartCount">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Checkout Section -->
+    <section class="section-padding bg-white">
+        <div class="container">
+            <h1 class="font-display display-5 fw-bold text-center mb-5">Checkout</h1>
+
+            <div class="row g-5">
+                <!-- Left: Order Summary -->
+                <div class="col-lg-7">
+                    <h4 class="font-display fw-bold mb-4">Order Summary</h4>
+                    <div id="orderItems"></div>
+
+                    <div class="bg-light p-4 rounded-3 mt-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fw-bold">Total Amount:</span>
+                            <span class="fw-bold fs-4 text-primary" id="grandTotal">₦0</span>
+                        </div>
+                        <hr>
+                        <p class="text-muted small text-center">
+                            Please make payment to the account below and send proof via WhatsApp
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Payment Instructions + WhatsApp -->
+                <div class="col-lg-5">
+                    <div class="bank-box border">
+                        <h5 class="fw-bold mb-3">Bank Transfer Details</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-3">
+                                <strong>Account Name:</strong><br>
+                                Pastor Sunday GraceLight Ministry
+                            </li>
+                            <li class="mb-3">
+                                <strong>Bank:</strong><br>
+                                GTBank (Guaranty Trust Bank)
+                            </li>
+                            <li class="mb-3">
+                                <strong>Account Number:</strong><br>
+                                0123456789
+                            </li>
+                            <li class="mb-3">
+                                <strong>Reference:</strong><br>
+                                Use the code shown in the WhatsApp message
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-5">
+                        <h5 class="fw-bold mb-3">Your Details</h5>
+                        <form id="checkoutForm">
+                            <div class="mb-3">
+                                <label for="customerName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="customerName" placeholder="Your full name" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="customerPhone" class="form-label">WhatsApp Phone Number</label>
+                                <input type="tel" class="form-control" id="customerPhone" placeholder="+23480xxxxxxxx" required>
+                            </div>
+
+                            <button type="submit" class="btn whatsapp-btn btn-lg w-100">
+                                Send Order & Payment Instructions to WhatsApp
+                                <i class="bi bi-whatsapp ms-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 text-center">
+        <div class="container">
+            <p class="mb-0">© 2026 GraceLight Books – Ministry of Pastor Sunday</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // ──────────────────────────────────────────────
+        //   Checkout Logic
+        // ──────────────────────────────────────────────
+
+        const orderItemsEl = document.getElementById('orderItems');
+        const grandTotalEl = document.getElementById('grandTotal');
+        const form = document.getElementById('checkoutForm');
+
+        // Load cart
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function safeNum(val, fallback = 0) {
+            const num = Number(val);
+            return Number.isFinite(num) ? num : fallback;
+        }
+
+        function renderOrder() {
+            if (cart.length === 0) {
+                orderItemsEl.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-cart-x display-1 text-muted"></i>
+                        <h5 class="mt-3">Your cart is empty</h5>
+                        <a href="books.html" class="btn btn-dark-custom mt-3">Browse Books</a>
+                    </div>
+                `;
+                grandTotalEl.textContent = '₦0';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const qty = Math.max(1, safeNum(item.quantity, 1));
+                const price = safeNum(item.price, 0);
+                const itemTotal = qty * price;
+                total += itemTotal;
+
+                html += `
+                    <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                        <img src="static/images/${item.id || 'placeholder'}.jpg" 
+                             alt="${item.title}" 
+                             class="cart-item-img me-3">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">${item.title}</h6>
+                            <small class="text-muted d-block">
+                                ${item.format.charAt(0).toUpperCase() + item.format.slice(1)} × ${qty}
+                            </small>
+                        </div>
+                        <div class="text-end fw-bold">
+                            ₦${itemTotal.toLocaleString()}
+                        </div>
+                    </div>
+                `;
+            });
+
+            orderItemsEl.innerHTML = html;
+            grandTotalEl.textContent = `₦${total.toLocaleString()}`;
+        }
+
+        // Generate WhatsApp message
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+
+            if (!name || !phone) {
+                alert('Please enter your name and WhatsApp number');
+                return;
+            }
+
+            // Simple reference code (timestamp-based)
+            const ref = `GL-${Date.now().toString().slice(-8)}`;
+
+            let message = `Hello Pastor Sunday,\n\n`;
+            message += `I want to place the following order:\n`;
+            message += `Name: ${name}\n`;
+            message += `Phone/WhatsApp: ${phone}\n`;
+            message += `Order Reference: ${ref}\n\n`;
+            message += `Items:\n`;
+
+            let total = 0;
+            cart.forEach(item => {
+                const qty = safeNum(item.quantity, 1);
+                const price = safeNum(item.price, 0);
+                const itemTotal = qty * price;
+                total += itemTotal;
+                message += `- ${item.title} (${item.format}) × ${qty} = ₦${itemTotal.toLocaleString()}\n`;
+            });
+
+            message += `\nTotal Amount: ₦${total.toLocaleString()}\n`;
+            message += `I will make payment to the account provided.\n`;
+            message += `Thank you!`;
+
+            // Encode for WhatsApp URL
+            const encodedMsg = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/2348031234567?text=${encodedMsg}`;  // ← change number
+
+            // Open WhatsApp
+            window.open(whatsappUrl, '_blank');
+
+            // Optional: clear cart after sending
+            // localStorage.removeItem('cart');
+            // window.location.href = 'thank-you.html';
+        });
+
+        // Initial render
+        renderOrder();
+    </script>
+</body>
+</html>
