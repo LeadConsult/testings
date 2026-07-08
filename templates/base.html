@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Business Intelligence Baseline{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="shell">
+  <nav class="sidebar">
+    <div class="brand">Ground Truth<small>Business Intelligence Baseline</small></div>
+
+    <div class="nav-group-label">Overview</div>
+    <a class="nav-item {{ 'active' if request.endpoint == 'dashboard' }}" href="{{ url_for('dashboard') }}">
+      <span class="tag">—</span> This Week
+    </a>
+
+    <div class="nav-group-label">Daily (log as it happens)</div>
+    <a class="nav-item {{ 'active' if request.endpoint == 'revenue' }}" href="{{ url_for('revenue') }}">
+      <span class="tag">01</span> Revenue &amp; Expense
+    </a>
+    <a class="nav-item {{ 'active' if request.endpoint == 'leads' }}" href="{{ url_for('leads') }}">
+      <span class="tag">02</span> Lead Tracker
+    </a>
+    <a class="nav-item {{ 'active' if request.endpoint == 'worklog' }}" href="{{ url_for('worklog') }}">
+      <span class="tag">03</span> Work Log
+    </a>
+
+    <div class="nav-group-label">Weekly (Sunday evening)</div>
+    <a class="nav-item {{ 'active' if request.endpoint == 'weekly_review' }}" href="{{ url_for('weekly_review') }}">
+      <span class="tag">04</span> Weekly Review
+    </a>
+    <a class="nav-item {{ 'active' if request.endpoint == 'weekly_summary' }}" href="{{ url_for('weekly_summary') }}">
+      <span class="tag">05</span> Weekly Summary
+    </a>
+
+    <div class="sidebar-footer">
+      <a href="{{ url_for('logout') }}">Log out</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Lead Tracker — Ground Truth{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <div class="eyebrow">Tool 02 · Closes Gap 5 (Sales Conversion)</div>
+    <h1>Daily Lead Tracker</h1>
+    <p class="sub">Log every inquiry, even if they don't buy immediately.</p>
+  </div>
+</div>
+
+<div class="stat-row">
+  <div class="stat-card good"><div class="label">Won (in range)</div><div class="value">{{ won }}</div></div>
+  <div class="stat-card warn"><div class="label">Lost (in range)</div><div class="value">{{ lost }}</div></div>
+  <div class="stat-card"><div class="label">Open (in range)</div><div class="value">{{ open_ }}</div></div>
+  <div class="stat-card"><div class="label">Conversion rate</div><div class="value">{{ "%.0f"|format(conv_rate) }}%</div></div>
+</div>
+
+<div class="sheet">
+  <h2>{{ 'Edit lead' if editing else 'Log an inquiry' }}</h2>
+  <form method="POST" id="lead-form">
+    {% if editing %}<input type="hidden" name="entry_id" value="{{ editing.id }}">{% endif %}
+    <div class="form-grid">
+      <div>
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" value="{{ editing.date if editing else today }}" required>
+      </div>
+      <div>
+        <label for="client_name">Client name</label>
+        <input type="text" id="client_name" name="client_name" value="{{ editing.client_name if editing else '' }}" required>
+      </div>
+      <div>
+        <label for="service_requested">Service requested</label>
+        <select id="service_requested" name="service_requested">
+          {% for s in service_lines %}
+          <option value="{{ s }}" {{ 'selected' if editing and editing.service_requested == s }}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="status">Status</label>
+        <select id="status" name="status" onchange="toggleLostReason(this.value)">
+          {% for s in statuses %}
+          <option value="{{ s }}" {{ 'selected' if editing and editing.status == s or (not editing and s == 'Open') }}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div id="lost-reason-field">
+        <label for="lost_reason">If lost: why?</label>
+        <input type="text" id="lost_reason" name="lost_reason" placeholder="e.g. Price too high" value="{{ editing.lost_reason if editing and editing.lost_reason else '' }}">
+      </div>
+      <div>
+        <button class="btn" type="submit">{{ 'Save changes' if editing else 'Add lead' }}</button>
+        {% if editing %}<a href="{{ url_for('leads') }}" class="btn secondary" style="margin-left:6px;">Cancel</a>{% endif %}
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="sheet">
+  <div class="week-bar">
+    <form method="GET">
+      <label style="margin:0; text-transform:none; font-weight:400;">From</label>
+      <input type="date" name="from" value="{{ start }}">
+      <label style="margin:0; text-transform:none; font-weight:400;">To</label>
+      <input type="date" name="to" value="{{ end }}">
+      <button class="btn secondary small" type="submit">Filter</button>
+    </form>
+    <a class="btn secondary small" href="{{ url_for('leads') }}">Reset to this week</a>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th><th>Client</th><th>Service</th><th>Status</th><th>If lost, why</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in entries %}
+      <tr>
+        <td>{{ e.date.strftime('%d %b %Y') }}</td>
+        <td>{{ e.client_name }}</td>
+        <td>{{ e.service_requested }}</td>
+        <td><span class="pill {{ e.status|lower }}">{{ e.status }}</span></td>
+        <td>{{ e.lost_reason or '—' }}</td>
+        <td class="actions-cell">
+          <a class="btn secondary small" href="{{ url_for('leads', edit=e.id) }}">Edit</a>
+          <form method="POST" action="{{ url_for('leads_delete', entry_id=e.id) }}" style="display:inline;" onsubmit="return confirm('Delete this lead?');">
+            <button class="btn danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr class="empty-row"><td colspan="6">No leads logged in this date range yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+function toggleLostReason(status) {
+  document.getElementById('lost-reason-field').style.display = (status === 'Lost') ? 'block' : 'none';
+}
+toggleLostReason(document.getElementById('status').value);
+</script>
+{% endblock %}

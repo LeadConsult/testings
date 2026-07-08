@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Weekly Review — Ground Truth{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <div class="eyebrow">Tool 04 · Closes Gap 2 (Operating Costs) &amp; Gap 6 (Legal Research)</div>
+    <h1>Weekly Review</h1>
+    <p class="sub">Complete once a week — Sunday evening works well.</p>
+  </div>
+</div>
+
+<div class="week-bar">
+  <form method="GET">
+    <label style="margin:0; text-transform:none; font-weight:400;">Week starting (Mon)</label>
+    <input type="date" name="week" value="{{ wk_start }}" onchange="this.form.submit()">
+  </form>
+  <span>covering {{ wk_start.strftime('%d %b') }} – {{ wk_end.strftime('%d %b %Y') }}</span>
+</div>
+
+<form method="POST">
+  <input type="hidden" name="week_start" value="{{ wk_start }}">
+  <div class="two-col">
+    <div class="sheet">
+      <h2>A. Fixed expenses (cash out)</h2>
+      <p class="hint">Only recurring operating costs — not job-specific fulfillment costs (those go in the Revenue &amp; Expense Log).</p>
+      <div class="form-grid" style="grid-template-columns: 1fr;">
+        <div>
+          <label for="transport">Transport (FUTA)</label>
+          <input type="number" step="0.01" min="0" id="transport" name="transport" class="fixed-input" value="{{ review.transport if review else 0 }}">
+        </div>
+        <div>
+          <label for="data_internet">Data / Internet</label>
+          <input type="number" step="0.01" min="0" id="data_internet" name="data_internet" class="fixed-input" value="{{ review.data_internet if review else 0 }}">
+        </div>
+        <div>
+          <label for="office_other">Office / Other</label>
+          <input type="number" step="0.01" min="0" id="office_other" name="office_other" class="fixed-input" value="{{ review.office_other if review else 0 }}">
+        </div>
+      </div>
+      <div style="margin-top:16px; padding-top:14px; border-top:2px solid var(--ink);">
+        <span class="label" style="display:inline;">Total fixed</span>
+        <div class="mono" id="fixed-total" style="font-size:22px; font-weight:700; color:var(--green-dark);">
+          {{ (review.total_fixed if review else 0) | naira }}
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet">
+      <h2>B. Legal / institutional milestone</h2>
+      <p class="hint">One concrete step toward formalizing the business, every week.</p>
+      <label for="legal_action">Action taken this week</label>
+      <textarea id="legal_action" name="legal_action" placeholder="e.g. Researched CAC registration costs">{{ review.legal_action if review else '' }}</textarea>
+      <div style="height:12px;"></div>
+      <label for="legal_data_found">Data found</label>
+      <textarea id="legal_data_found" name="legal_data_found" placeholder="e.g. Registration cost is ₦30,000">{{ review.legal_data_found if review else '' }}</textarea>
+    </div>
+  </div>
+
+  <button class="btn" type="submit">Save weekly review</button>
+</form>
+
+<script>
+function recalcFixed() {
+  const inputs = document.querySelectorAll('.fixed-input');
+  let total = 0;
+  inputs.forEach(i => total += parseFloat(i.value || 0));
+  document.getElementById('fixed-total').textContent = '\u20a6' + total.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+document.querySelectorAll('.fixed-input').forEach(i => i.addEventListener('input', recalcFixed));
+</script>
+{% endblock %}

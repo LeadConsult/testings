@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Work Log — Ground Truth{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <div class="eyebrow">Tool 03 · Closes Gap 4 (Capacity Constraints)</div>
+    <h1>Daily Work Log</h1>
+    <p class="sub">A 30-second entry at the end of the day — track the Lead Consult vs. Oatslead split.</p>
+  </div>
+</div>
+
+<div class="sheet">
+  <h2>{{ 'Edit entry' if editing else "Log today's split" }}</h2>
+  <form method="POST">
+    {% if editing %}<input type="hidden" name="entry_id" value="{{ editing.id }}">{% endif %}
+    <div class="form-grid">
+      <div>
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" value="{{ editing.date if editing else today }}" required>
+      </div>
+      <div>
+        <label for="lead_consult_hours">Lead Consult hours</label>
+        <input type="number" step="0.25" min="0" id="lead_consult_hours" name="lead_consult_hours" value="{{ editing.lead_consult_hours if editing else '' }}" required>
+      </div>
+      <div>
+        <label for="oatslead_hours">Oatslead hours</label>
+        <input type="number" step="0.25" min="0" id="oatslead_hours" name="oatslead_hours" value="{{ editing.oatslead_hours if editing else '' }}" required>
+      </div>
+      <div style="grid-column: span 2;">
+        <label for="task_completed">Primary task completed</label>
+        <input type="text" id="task_completed" name="task_completed" value="{{ editing.task_completed if editing else '' }}">
+      </div>
+      <div>
+        <button class="btn" type="submit">{{ 'Save changes' if editing else 'Add entry' }}</button>
+        {% if editing %}<a href="{{ url_for('worklog') }}" class="btn secondary" style="margin-left:6px;">Cancel</a>{% endif %}
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="sheet">
+  <div class="week-bar">
+    <form method="GET">
+      <label style="margin:0; text-transform:none; font-weight:400;">From</label>
+      <input type="date" name="from" value="{{ start }}">
+      <label style="margin:0; text-transform:none; font-weight:400;">To</label>
+      <input type="date" name="to" value="{{ end }}">
+      <button class="btn secondary small" type="submit">Filter</button>
+    </form>
+    <a class="btn secondary small" href="{{ url_for('worklog') }}">Reset to this week</a>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Date</th><th class="num">Lead Consult hrs</th><th class="num">Oatslead hrs</th><th>Primary task</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for e in entries %}
+      <tr>
+        <td>{{ e.date.strftime('%d %b %Y') }}</td>
+        <td class="num">{{ "%.2f"|format(e.lead_consult_hours) }}</td>
+        <td class="num">{{ "%.2f"|format(e.oatslead_hours) }}</td>
+        <td>{{ e.task_completed or '—' }}</td>
+        <td class="actions-cell">
+          <a class="btn secondary small" href="{{ url_for('worklog', edit=e.id) }}">Edit</a>
+          <form method="POST" action="{{ url_for('worklog_delete', entry_id=e.id) }}" style="display:inline;" onsubmit="return confirm('Delete this entry?');">
+            <button class="btn danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr class="empty-row"><td colspan="5">No work logged in this date range yet.</td></tr>
+      {% endfor %}
+    </tbody>
+    {% if entries %}
+    <tfoot>
+      <tr>
+        <td>Total</td>
+        <td class="num">{{ "%.2f"|format(totals.lead_consult) }}</td>
+        <td class="num">{{ "%.2f"|format(totals.oatslead) }}</td>
+        <td></td><td></td>
+      </tr>
+    </tfoot>
+    {% endif %}
+  </table>
+</div>
+{% endblock %}

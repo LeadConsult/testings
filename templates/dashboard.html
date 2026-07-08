@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}This Week — Ground Truth{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <div class="eyebrow">Overview</div>
+    <h1>This week at a glance</h1>
+    <p class="sub">{{ wk_start.strftime('%d %b') }} – {{ wk_end.strftime('%d %b %Y') }} · figures update the moment you log something below</p>
+  </div>
+</div>
+
+<div class="stat-row">
+  <div class="stat-card {{ 'good' if gross_margin >= 0 else 'warn' }}">
+    <div class="label">Gross margin so far</div>
+    <div class="value">{{ gross_margin | naira }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Revenue logged</div>
+    <div class="value">{{ total_revenue | naira }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Lead conversion</div>
+    <div class="value">{{ "%.0f"|format(conv_rate) }}%</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Hours: consult / oatslead</div>
+    <div class="value" style="font-size:18px;">{{ "%.1f"|format(lead_hours) }} / {{ "%.1f"|format(oatslead_hours) }}</div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="sheet">
+    <h2>Where to log things</h2>
+    <p class="hint">Each tool below closes one specific evidence gap in the baseline.</p>
+    <table>
+      <tbody>
+        <tr><td class="num" style="width:36px; color:var(--green-dark); font-weight:700;">01</td><td><a href="{{ url_for('revenue') }}">Revenue &amp; Expense Log</a> — every transaction, as it happens</td></tr>
+        <tr><td class="num" style="color:var(--green-dark); font-weight:700;">02</td><td><a href="{{ url_for('leads') }}">Lead Tracker</a> — every inquiry, won or lost</td></tr>
+        <tr><td class="num" style="color:var(--green-dark); font-weight:700;">03</td><td><a href="{{ url_for('worklog') }}">Work Log</a> — 30 seconds at day's end</td></tr>
+        <tr><td class="num" style="color:var(--green-dark); font-weight:700;">04</td><td><a href="{{ url_for('weekly_review') }}">Weekly Review</a> — fixed costs &amp; legal research, once a week</td></tr>
+        <tr><td class="num" style="color:var(--green-dark); font-weight:700;">05</td><td><a href="{{ url_for('weekly_summary') }}">Weekly Summary</a> — the ground-truth snapshot, auto-built from 01–04</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sheet">
+    <h2>This week's target</h2>
+    <p class="hint">Net weekly profit target: {{ 25000 | naira }} (toward ₦100k/month)</p>
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:28px; font-weight:600; color:{{ 'var(--green-dark)' if gross_margin >= 25000 else 'var(--rust)' }};">
+      {{ gross_margin | naira }}
+    </div>
+    <p class="target-note">This is gross margin before fixed costs. Fixed costs are entered weekly — see the Weekly Summary for true net profit once this week's review is filled in.</p>
+    <p class="hint" style="margin-top:14px;">{{ revenue_count }} transaction{{ '' if revenue_count == 1 else 's' }} logged so far this week.</p>
+  </div>
+</div>
+{% endblock %}
