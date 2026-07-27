@@ -165,7 +165,7 @@ BASE_CSS = """
   .scale-table td.item { text-align:left; }
   .scale-table td.pick { text-align:right; white-space:nowrap; }
   .scale-select { padding:6px 8px; border:1px solid #ccc; border-radius:4px; min-width:160px; }
-  .scale-select:invalid { color:#888; }
+  .scale-select:invalid { color:#000; }
   .submit-btn { background:#2f6f4f; color:#fff; border:none; padding:12px 28px; border-radius:6px;
                 font-size:16px; cursor:pointer; }
   .submit-btn:hover { background:#255a3f; }
@@ -296,7 +296,6 @@ SUCCESS_TEMPLATE = """
 <div class="wrap"><div class="success">
   <h2>Thank you!</h2>
   <p>Your response has been recorded successfully.</p>
-  <p><a href="{{ url_for('form') }}">Submit another response</a></p>
 </div></div>
 </body></html>
 """
