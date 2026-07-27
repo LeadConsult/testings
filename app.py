@@ -15,7 +15,7 @@ app.secret_key = "change-this-secret-key-in-production"
 DB = "responses.db"
 
 # Secret path segment for admin/export access (change this to your own secret!)
-ADMIN_SECRET = "manage-x7k2p9"
+ADMIN_SECRET = "view"
 
 # Cookie used to prevent the same browser from submitting twice
 SUBMITTED_COOKIE = "questionnaire_submitted"
@@ -165,7 +165,7 @@ BASE_CSS = """
   .scale-table td.item { text-align:left; }
   .scale-table td.pick { text-align:right; white-space:nowrap; }
   .scale-select { padding:6px 8px; border:1px solid #ccc; border-radius:4px; min-width:160px; }
-  .scale-select:invalid { color:#000; }
+  .scale-select:invalid { color:#888; }
   .submit-btn { background:#2f6f4f; color:#fff; border:none; padding:12px 28px; border-radius:6px;
                 font-size:16px; cursor:pointer; }
   .submit-btn:hover { background:#255a3f; }
@@ -296,6 +296,7 @@ SUCCESS_TEMPLATE = """
 <div class="wrap"><div class="success">
   <h2>Thank you!</h2>
   <p>Your response has been recorded successfully.</p>
+  <p><a href="{{ url_for('form') }}">Submit another response</a></p>
 </div></div>
 </body></html>
 """
@@ -408,3 +409,7 @@ def export():
 if __name__ == "__main__":
     init_db()
     app.run(debug=True, host="0.0.0.0", port=5000)
+else:
+    # Under a WSGI server (e.g. PythonAnywhere, gunicorn) this module is
+    # imported rather than run directly, so make sure the table exists here too.
+    init_db()
