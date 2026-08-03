@@ -1,8 +1,6 @@
 import sqlite3
-import hashlib
-import secrets
 from datetime import datetime
-from flask import Flask, g, request, render_template_string, redirect, url_for, send_file, make_response
+from flask import Flask, g, request, render_template_string, redirect, url_for, send_file
 import io
 
 try:
@@ -11,86 +9,170 @@ except ImportError:
     openpyxl = None
 
 app = Flask(__name__)
-app.secret_key = "change-this-secret-key-in-production"
 DB = "responses.db"
-
-# Secret path segment for admin/export access (change this to your own secret!)
-ADMIN_SECRET = "view"
-
-# Cookie used to prevent the same browser from submitting twice
-SUBMITTED_COOKIE = "questionnaire_submitted"
 
 # ---------------------------------------------------------------------------
 # Questionnaire definition
 # ---------------------------------------------------------------------------
+TITLE = "Facilities Management Practices and Performance of Office Buildings"
+SUBTITLE = "A Study of Office Buildings in Abuja, Federal Capital Territory"
+
+INTRO_TEXT = (
+    "This questionnaire is designed purely for academic research purposes, to examine the "
+    "relationship between facilities management (FM) practices and the performance of office "
+    "buildings in Nigerian organisations, with particular reference to Abuja. You have been "
+    "selected to participate based on your role and experience in facilities-related activities "
+    "in your office building. Kindly respond as candidly and accurately as possible; there is no "
+    "right or wrong answer. All information supplied will be treated with strict confidentiality "
+    "and used solely for the purpose of this academic study."
+)
+
+# Section A: demographic dropdown questions.
+# Each field name becomes a DB column and a form field name.
+DEMOGRAPHICS = [
+    {
+        "field": "gender",
+        "label": "Gender",
+        "options": ["Male", "Female"],
+    },
+    {
+        "field": "age",
+        "label": "Age",
+        "options": [
+            "Below 25 years",
+            "25 - 34 years",
+            "35 - 44 years",
+            "45 - 54 years",
+            "55 years and above",
+        ],
+    },
+    {
+        "field": "education",
+        "label": "Highest Educational Qualification",
+        "options": [
+            "OND/HND",
+            "Bachelor's Degree",
+            "Postgraduate Degree (Master's/PhD)",
+            "Professional Certification (e.g., IFMA, RICS, NIQS)",
+        ],
+    },
+    {
+        "field": "experience_years",
+        "label": "Years of Experience in Facilities Management / Occupancy of Current Building",
+        "options": ["Less than 2 years", "2 - 5 years", "6 - 10 years", "Above 10 years"],
+    },
+    {
+        "field": "respondent_category",
+        "label": "Respondent Category",
+        "options": ["Building User/Tenant", "Facilities Management Staff/Technical Expert"],
+    },
+    {
+        "field": "building_type",
+        "label": "Building/Organization Type",
+        "options": ["Government Building", "Multi-tenanted Building", "Private Corporate Building"],
+    },
+]
+
+# Sections B-F: Likert-scale statement blocks.
+# Each section has a code (used as a field prefix) and a flat list of items.
+# An item can optionally be preceded by a "group" sub-heading (used in Section C).
 SECTIONS = [
     {
         "code": "B",
-        "title": "SECTION B: LOAN DEFAULT AND BAD DEBT MANAGEMENT",
+        "title": "SECTION B: PREVAILING FACILITIES MANAGEMENT PRACTICES ADOPTED BY ORGANIZATIONS",
         "items": [
-            "The society verifies a member's repayment capacity before a loan is approved.",
-            "Loan applications are reviewed by more than one officer before disbursement.",
-            "The society enforces its maximum credit limit of twice a member's savings.",
-            "Members who default on repayment face clearly defined consequences.",
-            "The society's measures have reduced the rate of loan default over time.",
+            {"text": "My organization has an established/documented facilities management (FM) policy or framework guiding its facility operations."},
+            {"text": "My organization primarily adopts a preventive maintenance approach rather than fixing problems only after they occur (reactive/breakdown-driven maintenance)."},
+            {"text": "My organization utilizes computerized or technology-enabled tools (e.g., CMMS, CAFM, BIM) in managing facility operations."},
+            {"text": "My organization outsources some or all of its facilities management services to external/professional service providers."},
+            {"text": "My organization uses performance measurement tools or metrics to track the delivery of facilities management services."},
+            {"text": "My organization provides regular training and capacity development for facilities management personnel."},
+            {"text": "My organization prioritizes the provision of a safe environment, satisfactory physical working conditions, and quality service materials in its facilities management practice."},
         ],
     },
     {
         "code": "C",
-        "title": "SECTION C: CAPITAL SAFEGUARDING AND FINANCIAL SUSTAINABILITY",
+        "title": "SECTION C: FACILITY MANAGEMENT PRACTICES IN THE OFFICE BUILDING",
         "items": [
-            "Loan disbursement is guided by the level of a member's savings and shares.",
-            "The society maintains adequate reserves to absorb potential loan losses.",
-            "Income from the society's trading activities supports its lending capacity.",
-            "The committee monitors the society's overall financial position regularly.",
-            "Members' capital is adequately protected by current loan administration practices.",
+            {"group": "Regular Inspections", "text": "Building components and systems in my organization's office building are systematically inspected on a scheduled basis."},
+            {"text": "Routine checks are conducted to monitor the general condition of equipment and building systems."},
+            {"text": "Detailed condition audits are carried out periodically to comprehensively assess the state of building assets."},
+            {"text": "Compliance inspections are conducted to verify adherence to safety and regulatory standards."},
+            {"text": "Findings from inspections are documented and systematically recorded (e.g., using checklists, registers, or digital tools)."},
+            {"text": "Technology-based tools (e.g., CAFM, CMMS, BIM) are used to schedule, record, or track inspections."},
+            {"text": "Inspection data collected is used to inform maintenance prioritization and capital planning decisions."},
+
+            {"group": "Preventive Maintenance", "text": "My organization has clear policies and procedures guiding the planning and scheduling of maintenance activities."},
+            {"text": "Maintenance activities are primarily preventive (carried out on a planned schedule) rather than reactive (carried out only after a failure occurs)."},
+            {"text": "Predictive maintenance techniques (e.g., condition monitoring) are used to anticipate and pre-empt equipment failure before it occurs."},
+            {"text": "Maintenance schedules for building systems (e.g., HVAC, electrical, plumbing) are consistently followed."},
+            {"text": "Preventive maintenance practices in my organization have reduced the frequency of building system breakdowns."},
+
+            {"group": "Space Optimization", "text": "Office space allocation is based on functional need rather than organizational hierarchy or seniority."},
+            {"text": "My organization monitors space utilization to identify underused or overcrowded areas."},
+            {"text": "Office layouts are adapted or reconfigured to accommodate changing work patterns (e.g., flexible or hybrid working)."},
+            {"text": "Storage and other spaces are effectively managed to prevent the accumulation of unused furniture or equipment."},
+
+            {"group": "Safety and Compliance", "text": "My organization treats health and safety as an embedded organizational culture, not merely a regulatory compliance requirement."},
+            {"text": "Safety infrastructure (e.g., fire extinguishers, safety signage, emergency exits) is regularly maintained and inspected to ensure it remains functional."},
+            {"text": "Risk in my organization's building is proactively identified and managed rather than addressed only after an incident occurs."},
+            {"text": "My organization maintains vigilance about safety, even in the absence of recent incidents."},
+
+            {"group": "Sustainability Initiatives", "text": "My organization implements energy efficiency programmes within the building (e.g., efficient lighting and equipment)."},
+            {"text": "My organization has adopted or explored renewable energy sources to supplement its power supply."},
+            {"text": "Waste minimization and water conservation practices are implemented within the building."},
+            {"text": "My organization has measures in place to manage the operating costs associated with unreliable power supply (e.g., load management systems, efficient generator use)."},
+            {"text": "Building operations in my organization are aligned with recognized green or sustainable building standards."},
         ],
     },
     {
         "code": "D",
-        "title": "SECTION D: PRODUCTIVE UTILIZATION OF LOANS",
+        "title": "SECTION D: OFFICE BUILDING PERFORMANCE",
         "items": [
-            "Members are required to state the purpose of a loan before it is approved.",
-            "The society verifies how a loan was used after disbursement.",
-            "Most loans granted are used for income-generating purposes.",
-            "The society offers guidance to members on productive loan use.",
-            "Loans used productively are less likely to result in default.",
+            {"text": "The building's spatial layout and infrastructure effectively support the core operations of my organization and can be reconfigured as work patterns change."},
+            {"text": "The building's structural, electrical, and mechanical systems operate reliably, and support/maintenance services are delivered promptly and efficiently."},
+            {"text": "My organization's occupancy costs are well managed, and the building's asset value is preserved in line with financial expectations."},
+            {"text": "The building performs well in terms of energy efficiency, waste management, and overall environmental impact."},
+            {"text": "Occupants experience a comfortable working environment (thermal, acoustic, and lighting conditions) and are generally satisfied with facility services."},
+            {"text": "The building's physical assets are maintained in a manner that preserves their long-term value across the building's lifecycle."},
         ],
     },
     {
         "code": "E",
-        "title": "SECTION E: LOAN ALLOCATION FAIRNESS AND FUND DISTRIBUTION",
+        "title": "SECTION E: LEVEL OF INTEGRATION OF FM PRACTICES WITHIN ORGANIZATIONAL STRATEGIC PLANNING AND ITS EFFECT ON BUILDING PERFORMANCE",
         "items": [
-            "Loan approval criteria are applied consistently to all members.",
-            "The 18-month loan tenure is fair to members across loan types.",
-            "All eligible members have equal access to available loan funds.",
-            "Loan amounts are proportionate to individual members' contributions.",
-            "Members are satisfied with the fairness of the loan allocation process.",
+            {"text": "Facilities management is represented at board or senior management level in strategic decision-making."},
+            {"text": "FM budgets and planning are aligned with my organization's overall strategic objectives."},
+            {"text": "Facility managers are involved in strategic planning processes from an early stage, rather than only after major decisions have already been made."},
+            {"text": "There are clear communication channels or formal mechanisms connecting FM decision-making to the organization's strategic planning process."},
+            {"text": "My organization evaluates facility decisions (e.g., on space, maintenance, or capital upgrades) based on their contribution to organizational performance, not merely on cost."},
+            {"text": "FM is treated as a value-adding function in my organization rather than simply a cost to be minimized."},
         ],
     },
     {
         "code": "F",
-        "title": "SECTION F: LOAN RECOVERY AND MONITORING MECHANISMS",
+        "title": "SECTION F: MAJOR BARRIERS AFFECTING THE EFFECTIVE IMPLEMENTATION OF FM PRACTICES",
         "items": [
-            "The society's Taskforce Committee monitors loan repayment on a monthly basis.",
-            "Defaulting members are contacted promptly by the Taskforce Committee to arrange repayment.",
-            "Loan repayment records are reviewed on a regular basis.",
-            "The society has an effective strategy for recovering overdue loans.",
-            "Monitoring of disbursed loans is adequate to detect early signs of default.",
+            {"text": "Inadequate funding or budgetary allocation limits the effective execution of FM practices in my organization."},
+            {"text": "The high cost of technology, equipment, and skilled personnel constrains investment in advanced FM practices."},
+            {"text": "Facilities management in my organization lacks sufficiently strong leadership commitment or support from senior management."},
+            {"text": "Weak enforcement of facilities management regulations or standards hampers effective implementation."},
+            {"text": "Limited adoption of FM technology (e.g., CMMS, CAFM, BIM) constrains effective facilities management."},
+            {"text": "Facilities management personnel lack adequate training and professional capacity development opportunities."},
         ],
     },
 ]
 
-SCALE = ["SA", "A", "U", "D", "SD"]
+SCALE = ["SA", "A", "N", "D", "SD"]
 SCALE_LABELS = {
     "SA": "Strongly Agree",
     "A": "Agree",
-    "U": "Undecided",
+    "N": "Neutral",
     "D": "Disagree",
     "SD": "Strongly Disagree",
 }
 
-# Build flat list of field names: e.g. B1..B5, C1..C5 ...
+# Build flat list of Likert field names: e.g. B1..B7, C1..C25 ...
 def all_fields():
     fields = []
     for sec in SECTIONS:
@@ -99,6 +181,7 @@ def all_fields():
     return fields
 
 FIELDS = all_fields()
+DEMO_FIELDS = [d["field"] for d in DEMOGRAPHICS]
 
 # ---------------------------------------------------------------------------
 # DB helpers
@@ -117,28 +200,18 @@ def close_db(exception=None):
 
 def init_db():
     conn = sqlite3.connect(DB)
-    cols = ", ".join(f'"{f}" TEXT' for f in FIELDS)
+    demo_cols = ", ".join(f'"{f}" TEXT' for f in DEMO_FIELDS)
+    likert_cols = ", ".join(f'"{f}" TEXT' for f in FIELDS)
     conn.execute(f'''
         CREATE TABLE IF NOT EXISTS responses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             submitted_at TEXT,
-            gender TEXT,
-            category TEXT,
-            years_association TEXT,
-            response_hash TEXT,
-            {cols}
+            {demo_cols},
+            {likert_cols}
         )
-    ''')
-    conn.execute('''
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_response_hash ON responses(response_hash)
     ''')
     conn.commit()
     conn.close()
-
-def make_response_hash(gender, category, years, values):
-    """Fingerprint of an entire set of answers, used to catch exact-duplicate resubmissions."""
-    raw = "|".join([gender, category, years] + values)
-    return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 # ---------------------------------------------------------------------------
 # Templates
@@ -165,7 +238,7 @@ BASE_CSS = """
   .scale-table td.item { text-align:left; }
   .scale-table td.pick { text-align:right; white-space:nowrap; }
   .scale-select { padding:6px 8px; border:1px solid #ccc; border-radius:4px; min-width:160px; }
-  .scale-select:invalid { color:#000; }
+  .scale-select:invalid { color:#888; }
   .submit-btn { background:#2f6f4f; color:#fff; border:none; padding:12px 28px; border-radius:6px;
                 font-size:16px; cursor:pointer; }
   .submit-btn:hover { background:#255a3f; }
@@ -188,61 +261,40 @@ FORM_TEMPLATE = """
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Loan Administration Questionnaire</title>
+  <title>{{ title }}</title>
   """ + BASE_CSS + """
 </head>
 <body>
 <div class="wrap">
   <div class="header">
-    <h1>Questionnaire</h1>
-    <p>Loan Administration in Al Birru Islamic Multipurpose Cooperative Society, Akure</p>
+    <h1>{{ title }}</h1>
+    <p>{{ subtitle }}</p>
   </div>
   <div class="body">
     <div class="intro">
-      Dear Respondent, this questionnaire is designed to gather information on loan administration
-      practices at Al Birru Islamic Multipurpose Cooperative Society, Akure, for academic research
-      purposes only. All responses will be treated with strict confidentiality and used solely for
-      this study. Please respond as accurately as possible. Thank you for your participation.
+      Dear Respondent, {{ intro_text }}
     </div>
 
     <form method="POST" action="{{ url_for('submit') }}">
       <fieldset>
-        <legend>Section A: Respondent Information</legend>
+        <legend>SECTION A: DEMOGRAPHIC INFORMATION</legend>
 
+        {% for demo in demographics %}
         <div class="q">
-          <label class="qtext">Gender <span class="required">*</span></label>
-          <select class="scale-select" name="gender" required>
+          <label class="qtext">{{ demo.label }} <span class="required">*</span></label>
+          <select class="scale-select" name="{{ demo.field }}" required>
             <option value="" disabled selected>Select&hellip;</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+            {% for opt in demo.options %}
+            <option value="{{ opt }}">{{ opt }}</option>
+            {% endfor %}
           </select>
         </div>
-
-        <div class="q">
-          <label class="qtext">Category of Respondent <span class="required">*</span></label>
-          <select class="scale-select" name="category" required>
-            <option value="" disabled selected>Select&hellip;</option>
-            <option value="Committee Member">Committee Member</option>
-            <option value="Staff">Staff</option>
-            <option value="General Member">General Member</option>
-          </select>
-        </div>
-
-        <div class="q">
-          <label class="qtext">Years of Association with the Society <span class="required">*</span></label>
-          <select class="scale-select" name="years_association" required>
-            <option value="" disabled selected>Select&hellip;</option>
-            <option value="Less than 2 years">Less than 2 years</option>
-            <option value="2-5 years">2-5 years</option>
-            <option value="5-10 years">5-10 years</option>
-            <option value="Above 10 years">Above 10 years</option>
-          </select>
-        </div>
+        {% endfor %}
       </fieldset>
 
       <div class="intro" style="background:#eef5ff;border-left-color:#3b82f6;">
-        For Sections B to F, please tick as appropriate:<br>
-        SA = Strongly Agree, A = Agree, U = Undecided, D = Disagree, SD = Strongly Disagree.
+        For Sections B to F, please select as appropriate:<br>
+        SA = Strongly Agree, A = Agree, N = Neutral, D = Disagree, SD = Strongly Disagree.
       </div>
 
       {% for sec in sections %}
@@ -250,8 +302,11 @@ FORM_TEMPLATE = """
         <legend>{{ sec.title }}</legend>
         <table class="scale-table">
           {% for item in sec['items'] %}
+          {% if item.group %}
+          <tr><td colspan="2" style="padding-top:16px;"><strong style="color:#2f6f4f;">{{ item.group }}</strong></td></tr>
+          {% endif %}
           <tr>
-            <td class="item">{{ loop.index }}. {{ item }}</td>
+            <td class="item">{{ loop.index }}. {{ item.text }}</td>
             <td class="pick">
               <select class="scale-select" name="{{ sec.code }}{{ loop.index }}" required>
                 <option value="" disabled selected>Select&hellip;</option>
@@ -276,19 +331,6 @@ FORM_TEMPLATE = """
 </html>
 """
 
-ALREADY_SUBMITTED_TEMPLATE = """
-<!doctype html>
-<html><head><meta charset="utf-8">""" + BASE_CSS + """</head>
-<body>
-<div class="wrap"><div class="success">
-  <h2>You've already responded</h2>
-  <p>Our records show this questionnaire was already submitted from this browser.
-     Only one response per respondent is accepted for this study.</p>
-  <p>If you believe this is an error, please contact the research team.</p>
-</div></div>
-</body></html>
-"""
-
 SUCCESS_TEMPLATE = """
 <!doctype html>
 <html><head><meta charset="utf-8">""" + BASE_CSS + """</head>
@@ -296,6 +338,7 @@ SUCCESS_TEMPLATE = """
 <div class="wrap"><div class="success">
   <h2>Thank you!</h2>
   <p>Your response has been recorded successfully.</p>
+  <p><a href="{{ url_for('form') }}">Submit another response</a></p>
 </div></div>
 </body></html>
 """
@@ -327,66 +370,58 @@ ADMIN_TEMPLATE = """
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
-@app.route("/")
+@app.route("/input")
 def form():
-    if request.cookies.get(SUBMITTED_COOKIE):
-        return render_template_string(ALREADY_SUBMITTED_TEMPLATE)
-    return render_template_string(FORM_TEMPLATE, sections=SECTIONS, scale=SCALE, scale_labels=SCALE_LABELS)
+    return render_template_string(
+        FORM_TEMPLATE,
+        title=TITLE,
+        subtitle=SUBTITLE,
+        intro_text=INTRO_TEXT,
+        demographics=DEMOGRAPHICS,
+        sections=SECTIONS,
+        scale=SCALE,
+        scale_labels=SCALE_LABELS,
+    )
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    if request.cookies.get(SUBMITTED_COOKIE):
-        return render_template_string(ALREADY_SUBMITTED_TEMPLATE)
-
     db = get_db()
-    gender = request.form.get("gender", "")
-    category = request.form.get("category", "")
-    years = request.form.get("years_association", "")
+    demo_values = [request.form.get(f, "") for f in DEMO_FIELDS]
     values = [request.form.get(f, "") for f in FIELDS]
-    resp_hash = make_response_hash(gender, category, years, values)
 
-    placeholders = ", ".join(["?"] * (5 + len(FIELDS)))
+    placeholders = ", ".join(["?"] * (1 + len(DEMO_FIELDS) + len(FIELDS)))
     cols = ", ".join(
-        ['"submitted_at"', '"gender"', '"category"', '"years_association"', '"response_hash"']
+        ['"submitted_at"']
+        + [f'"{f}"' for f in DEMO_FIELDS]
         + [f'"{f}"' for f in FIELDS]
     )
-    try:
-        db.execute(
-            f'INSERT INTO responses ({cols}) VALUES ({placeholders})',
-            [datetime.now().isoformat(), gender, category, years, resp_hash] + values,
-        )
-        db.commit()
-    except sqlite3.IntegrityError:
-        # Exact same set of answers already exists (duplicate-answer backup check)
-        db.rollback()
-        resp = make_response(render_template_string(ALREADY_SUBMITTED_TEMPLATE))
-        resp.set_cookie(SUBMITTED_COOKIE, "1", max_age=60 * 60 * 24 * 365)
-        return resp
-
-    resp = make_response(redirect(url_for("success")))
-    resp.set_cookie(SUBMITTED_COOKIE, "1", max_age=60 * 60 * 24 * 365)
-    return resp
+    db.execute(
+        f'INSERT INTO responses ({cols}) VALUES ({placeholders})',
+        [datetime.now().isoformat()] + demo_values + values,
+    )
+    db.commit()
+    return redirect(url_for("success"))
 
 @app.route("/success")
 def success():
     return render_template_string(SUCCESS_TEMPLATE)
 
-@app.route(f"/{ADMIN_SECRET}")
+@app.route("/view")
 def admin():
     db = get_db()
     cur = db.execute("SELECT * FROM responses ORDER BY id DESC")
     rows = cur.fetchall()
-    headers = rows[0].keys() if rows else ["id", "submitted_at", "gender", "category", "years_association"] + FIELDS
-    return render_template_string(ADMIN_TEMPLATE, headers=headers, rows=rows, count=len(rows), admin_secret=ADMIN_SECRET)
+    headers = rows[0].keys() if rows else ["id", "submitted_at"] + DEMO_FIELDS + FIELDS
+    return render_template_string(ADMIN_TEMPLATE, headers=headers, rows=rows, count=len(rows))
 
-@app.route(f"/{ADMIN_SECRET}/export")
+@app.route("/view/export")
 def export():
     if openpyxl is None:
         return "openpyxl not installed. Run: pip install openpyxl", 500
     db = get_db()
     cur = db.execute("SELECT * FROM responses ORDER BY id")
     rows = cur.fetchall()
-    headers = list(rows[0].keys()) if rows else ["id", "submitted_at", "gender", "category", "years_association"] + FIELDS
+    headers = list(rows[0].keys()) if rows else ["id", "submitted_at"] + DEMO_FIELDS + FIELDS
 
     wb = openpyxl.Workbook()
     ws = wb.active
